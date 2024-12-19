@@ -1,0 +1,98 @@
+{
+  "data": {
+    "shows": {
+      "edges": [
+        {
+          "_id": "mukaG3x8K8qduYy5u",
+          "name": "Huan You Lieren",
+          "availableEpisodes": {
+            "sub": 12,
+            "dub": 0,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "3WKbxhQ37i9LBLkK4",
+          "name": "Hunter x Hunter: Yorkshin City Kanketsu-hen",
+          "availableEpisodes": {
+            "sub": 8,
+            "dub": 0,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "DkKWjEA3A7m5kCJWp",
+          "name": "Hanka×Hanka (2011)",
+          "availableEpisodes": {
+            "sub": 148,
+            "dub": 148,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "LqurSrYKjD3MbePRF",
+          "name": "Hunter x Hunter Movie 2: The Last Mission",
+          "availableEpisodes": {
+            "sub": 1,
+            "dub": 1,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "8B7cjdnaryKkgLk6F",
+          "name": "Hunter x Hunter: Greed Island",
+          "availableEpisodes": {
+            "sub": 8,
+            "dub": 0,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "jaJdELAe23ieuzqXb",
+          "name": "Hunter x Hunter: Greed Island Final",
+          "availableEpisodes": {
+            "sub": 14,
+            "dub": 0,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "PPtnZ7aEPk7WnAtpu",
+          "name": "Irregular Hunter X: The Day of Sigma",
+          "availableEpisodes": {
+            "sub": 1,
+            "dub": 1,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "6h9mYiGifi5wGtE5g",
+          "name": "Hunter x Hunter Movie 1: Phantom Rouge",
+          "availableEpisodes": {
+            "sub": 1,
+            "dub": 1,
+            "raw": 0
+          },
+          "__typename": "Show"
+        },
+        {
+          "_id": "mqT9iNNwP6xBLbc6G",
+          "name": "Hunter X Hunter",
+          "availableEpisodes": {
+            "sub": 62,
+            "dub": 62,
+            "raw": 0
+          },
+          "__typename": "Show"
+        }
+      ]
+    }
+  }
+}
