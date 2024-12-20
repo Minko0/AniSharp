@@ -1,6 +1,6 @@
 namespace AniSharp.Console.AllAnime;
 
-public class LinksFromSourceUrlResponse
+public class LinksFromSourceUrlResponseModel
 {
     public class LinkType
     {

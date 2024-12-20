@@ -1,6 +1,6 @@
 namespace AniSharp.Console.AllAnime;
 
-public class AllAnimeSearch
+public class SearchAnimeQueryModel
 {
     public class SearchType
     {

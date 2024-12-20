@@ -14,11 +14,11 @@ public class AllAnimeClient
         _client.BaseAddress = new Uri(BaseUrl);
     }
     
-    public async Task<AllAnimeSearchResponse?> SearchAnime(string anime)
+    public async Task<SearchAnimeResponseModel?> SearchAnime(string anime)
     {
-        var query = new AllAnimeSearch()
+        var query = new SearchAnimeQueryModel()
         {
-            Search = new AllAnimeSearch.SearchType()
+            Search = new SearchAnimeQueryModel.SearchType()
             {
                 AllowAdult = true,
                 AllowUnknown = true,
@@ -30,11 +30,6 @@ public class AllAnimeClient
             CountryOfOrigin = "ALL",
         };
 
-        var jsonString = JsonSerializer.Serialize(query, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        });
-        
         const string graphQlQuery = @"
         query(
             $search: SearchInput,
@@ -58,38 +53,19 @@ public class AllAnimeClient
                 }
             }
         }";
-        var url = new StringBuilder(BaseUrl)
-            .Append($"?variables={jsonString}")
-            .Append($"&query={graphQlQuery}")
-            .ToString();
-        
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Referrer = new Uri("https://allmanga.to/");
-        
-        var response = await _client.SendAsync(request);
-        var responseText = await response.Content.ReadAsStringAsync();
 
-        var result = JsonSerializer.Deserialize<AllAnimeSearchResponse>(responseText, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        });
-        
-        return result;
+        var result = await GraphQLRequest<SearchAnimeResponseModel>(BaseUrl, query, graphQlQuery);
+        return result.Value;
     }
 
-    public async Task<GetEpisodeSourcesResponse?> GetEpisodeSources(string showId, int episode)
+    public async Task<GetEpisodeSourcesResponseModel?> GetEpisodeSources(string showId, int episode)
     {
-        var query = new GetEpisodeUrlModel()
+        var query = new GetEpisodeSourcesQueryModel()
         {
             ShowId = showId,
             EpisodeString = episode.ToString(),
             TranslationType = "sub",
         };
-        
-        var jsonString = JsonSerializer.Serialize(query, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        });
         
         const string graphQlQuery = @"
         query(
@@ -105,26 +81,11 @@ public class AllAnimeClient
             episodeString sourceUrls    }
         }";
         
-        var url = new StringBuilder(BaseUrl)
-            .Append($"?variables={jsonString}")
-            .Append($"&query={graphQlQuery}")
-            .ToString();
-        
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
-        request.Headers.Referrer = new Uri("https://allmanga.to/");
-        
-        var response = await _client.SendAsync(request);
-        var responseText = await response.Content.ReadAsStringAsync();
-        
-        var result = JsonSerializer.Deserialize<GetEpisodeSourcesResponse>(responseText, new JsonSerializerOptions()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        });
-
-        return result;
+        var result = await GraphQLRequest<GetEpisodeSourcesResponseModel>(BaseUrl, query, graphQlQuery);
+        return result.Value;
     }
 
-    public async Task<LinksFromSourceUrlResponse?> GetLinksFromSourceUrl(string sourceUrl)
+    public async Task<LinksFromSourceUrlResponseModel?> GetLinksFromSourceUrl(string sourceUrl)
     {
         if (sourceUrl.StartsWith("--"))
         {
@@ -138,7 +99,6 @@ public class AllAnimeClient
 
         sourceUrl = sourceUrl.Replace("clock", "clock.json");
         
-        
         var url = new StringBuilder("https://allanime.day")
             .Append(sourceUrl)
             .ToString();
@@ -149,12 +109,43 @@ public class AllAnimeClient
         var response = await _client.SendAsync(request);
         var responseText = await response.Content.ReadAsStringAsync();
         
-        var result = JsonSerializer.Deserialize<LinksFromSourceUrlResponse>(responseText, new JsonSerializerOptions()
+        var result = JsonSerializer.Deserialize<LinksFromSourceUrlResponseModel>(responseText, new JsonSerializerOptions()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         });
 
         return result;
+    }
+    
+    private async Task<Optional<T>> GraphQLRequest<T>(string baseUrl, object query, string graphQlQuery)
+    {
+        var jsonString = JsonSerializer.Serialize(query, new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
+        
+        var url = new StringBuilder(baseUrl)
+            .Append($"?variables={jsonString}")
+            .Append($"&query={graphQlQuery}")
+            .ToString();
+        
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Referrer = new Uri("https://allmanga.to/");
+        
+        var response = await _client.SendAsync(request);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            return new Optional<T>();
+        }
+        
+        var responseText = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<T>(responseText, new JsonSerializerOptions()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        });
+        
+        return new Optional<T>(result);
     }
 
     private static string OneDigitSymmetricXor(int password, string target)
@@ -168,5 +159,4 @@ public class AllAnimeClient
         
         return Encoding.UTF8.GetString(targetBytes);
     }
-    
 }

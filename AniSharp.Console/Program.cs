@@ -2,7 +2,7 @@
 using AniSharp.Console.AllAnime;
 
 var allAnimeClient = new AllAnimeClient();
-var result = await allAnimeClient.SearchAnime("hunter x hunter");
+var result = await allAnimeClient.SearchAnime("natsume yuujinchou");
 
 if (result != null)
 {

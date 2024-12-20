@@ -1,6 +1,6 @@
 namespace AniSharp.Console.AllAnime;
 
-public class GetEpisodeSourcesResponse
+public class GetEpisodeSourcesResponseModel
 {
     public class DataModel
     {

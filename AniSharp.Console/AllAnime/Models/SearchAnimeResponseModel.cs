@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace AniSharp.Console.AllAnime;
 
-public class AllAnimeSearchResponse
+public class SearchAnimeResponseModel
 {
     public class DataType
     {
