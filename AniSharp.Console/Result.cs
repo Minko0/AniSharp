@@ -1,16 +1,16 @@
 namespace AniSharp.Console;
 
-public struct Optional<T>(T value)
+public struct Optional<T>(T value) : IEquatable<Optional<T>>
 {
     public bool HasValue { get; private set; } = true;
-    private T value = value;
+    private readonly T _value = value;
     public T Value
     {
         get
         {
             if (HasValue)
             {
-                return value;
+                return _value;
             }
             else
             {
@@ -30,17 +30,21 @@ public struct Optional<T>(T value)
 
     public override bool Equals(object obj)
     {
-        if (obj is Optional<T>)
-            return this.Equals((Optional<T>)obj);
-        else
-            return false;
+        if (obj is Optional<T> optional)
+        {
+            return Equals(optional);
+        }
+
+        return false;
     }
     public bool Equals(Optional<T> other)
     {
         if (HasValue && other.HasValue)
-            return object.Equals(value, other.value);
-        else
-            return HasValue == other.HasValue;
+        {
+            return Equals(_value, other._value);
+        }
+
+        return HasValue == other.HasValue;
     }
 
     public static bool operator ==(Optional<T> left, Optional<T> right)
@@ -51,5 +55,10 @@ public struct Optional<T>(T value)
     public static bool operator !=(Optional<T> left, Optional<T> right)
     {
         return !(left == right);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_value, HasValue);
     }
 }
