@@ -8,9 +8,9 @@ public class AllAnimeClient
     private readonly HttpClient _client;
     private const string BaseUrl = "https://api.allanime.day/api";
 
-    public AllAnimeClient()
+    public AllAnimeClient(HttpClient httpClient)
     {
-        _client = new HttpClient();
+        _client = httpClient;
         _client.BaseAddress = new Uri(BaseUrl);
     }
     
@@ -54,7 +54,7 @@ public class AllAnimeClient
             }
         }";
 
-        var result = await GraphQLRequest<SearchAnimeResponseModel>(BaseUrl, query, graphQlQuery);
+        var result = await GraphQlRequest<SearchAnimeResponseModel>(BaseUrl, query, graphQlQuery);
         return result.Value;
     }
 
@@ -81,7 +81,7 @@ public class AllAnimeClient
             episodeString sourceUrls    }
         }";
         
-        var result = await GraphQLRequest<GetEpisodeSourcesResponseModel>(BaseUrl, query, graphQlQuery);
+        var result = await GraphQlRequest<GetEpisodeSourcesResponseModel>(BaseUrl, query, graphQlQuery);
         return result.Value;
     }
 
@@ -117,7 +117,7 @@ public class AllAnimeClient
         return result;
     }
     
-    private async Task<Optional<T>> GraphQLRequest<T>(string baseUrl, object query, string graphQlQuery)
+    private async Task<Optional<T>> GraphQlRequest<T>(string baseUrl, object query, string graphQlQuery)
     {
         var jsonString = JsonSerializer.Serialize(query, new JsonSerializerOptions()
         {

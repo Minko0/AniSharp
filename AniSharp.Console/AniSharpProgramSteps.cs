@@ -7,7 +7,7 @@ namespace AniSharp.Console;
 
 public class AniSharpProgramSteps
 {
-    private readonly AllAnimeClient _allAnimeClient = new();
+    private readonly AllAnimeClient _allAnimeClient = new(new HttpClient());
     
     public async Task<List<SearchAnimeResponseModel.DataType.ShowsType.EdgesType>> SearchAnime()
     {
