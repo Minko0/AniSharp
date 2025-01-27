@@ -1,6 +1,6 @@
 namespace AniSharp.Console;
 
-public struct Optional<T>(T value) : IEquatable<Optional<T>>
+public struct ClientResponse<T>(T value) : IEquatable<ClientResponse<T>>
 {
     public bool HasValue { get; private set; } = true;
     private readonly T _value = value;
@@ -19,25 +19,25 @@ public struct Optional<T>(T value) : IEquatable<Optional<T>>
         }
     }
 
-    public static explicit operator T(Optional<T> optional)
+    public static explicit operator T(ClientResponse<T> clientResponse)
     {
-        return optional.Value;
+        return clientResponse.Value;
     }
-    public static implicit operator Optional<T>(T value)
+    public static implicit operator ClientResponse<T>(T value)
     {
-        return new Optional<T>(value);
+        return new ClientResponse<T>(value);
     }
 
     public override bool Equals(object obj)
     {
-        if (obj is Optional<T> optional)
+        if (obj is ClientResponse<T> optional)
         {
             return Equals(optional);
         }
 
         return false;
     }
-    public bool Equals(Optional<T> other)
+    public bool Equals(ClientResponse<T> other)
     {
         if (HasValue && other.HasValue)
         {
@@ -47,12 +47,12 @@ public struct Optional<T>(T value) : IEquatable<Optional<T>>
         return HasValue == other.HasValue;
     }
 
-    public static bool operator ==(Optional<T> left, Optional<T> right)
+    public static bool operator ==(ClientResponse<T> left, ClientResponse<T> right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(Optional<T> left, Optional<T> right)
+    public static bool operator !=(ClientResponse<T> left, ClientResponse<T> right)
     {
         return !(left == right);
     }

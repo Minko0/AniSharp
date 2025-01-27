@@ -14,7 +14,7 @@ public class AllAnimeClient
         _client.BaseAddress = new Uri(BaseUrl);
     }
     
-    public async Task<SearchAnimeResponseModel?> SearchAnime(string anime)
+    public async Task<ClientResponse<SearchAnimeResponseModel>> SearchAnime(string anime)
     {
         var query = new SearchAnimeQueryModel()
         {
@@ -54,11 +54,10 @@ public class AllAnimeClient
             }
         }";
 
-        var result = await GraphQlRequest<SearchAnimeResponseModel>(BaseUrl, query, graphQlQuery);
-        return result.Value;
+        return await GraphQlRequest<SearchAnimeResponseModel>(BaseUrl, query, graphQlQuery);
     }
 
-    public async Task<GetEpisodeSourcesResponseModel?> GetEpisodeSources(string showId, int episode)
+    public async Task<ClientResponse<GetEpisodeSourcesResponseModel>> GetEpisodeSources(string showId, int episode)
     {
         var query = new GetEpisodeSourcesQueryModel()
         {
@@ -81,8 +80,7 @@ public class AllAnimeClient
             episodeString sourceUrls    }
         }";
         
-        var result = await GraphQlRequest<GetEpisodeSourcesResponseModel>(BaseUrl, query, graphQlQuery);
-        return result.Value;
+        return await GraphQlRequest<GetEpisodeSourcesResponseModel>(BaseUrl, query, graphQlQuery);
     }
 
     public async Task<LinksFromSourceUrlResponseModel?> GetLinksFromSourceUrl(string sourceUrl)
@@ -117,7 +115,7 @@ public class AllAnimeClient
         return result;
     }
     
-    private async Task<Optional<T>> GraphQlRequest<T>(string baseUrl, object query, string graphQlQuery)
+    private async Task<ClientResponse<T>> GraphQlRequest<T>(string baseUrl, object query, string graphQlQuery)
     {
         var jsonString = JsonSerializer.Serialize(query, new JsonSerializerOptions()
         {
@@ -136,7 +134,7 @@ public class AllAnimeClient
         
         if (!response.IsSuccessStatusCode)
         {
-            return new Optional<T>();
+            return new ClientResponse<T>();
         }
         
         var responseText = await response.Content.ReadAsStringAsync();
@@ -145,7 +143,7 @@ public class AllAnimeClient
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         });
         
-        return new Optional<T>(result);
+        return new ClientResponse<T>(result);
     }
 
     private static string OneDigitSymmetricXor(int password, string target)

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Text.RegularExpressions;
 using AniSharp.Console.AllAnime;
+using AniSharp.Console.History;
+using AniSharp.Console.Models;
 using Spectre.Console;
 
 namespace AniSharp.Console;
@@ -8,6 +10,7 @@ namespace AniSharp.Console;
 public class AniSharpProgramSteps
 {
     private readonly AllAnimeClient _allAnimeClient = new(new HttpClient());
+    private readonly HistoryManager _historyManager = new();
     
     public async Task<List<SearchAnimeResponseModel.DataType.ShowsType.EdgesType>> SearchAnime()
     {
@@ -26,9 +29,9 @@ public class AniSharpProgramSteps
             query = AnsiConsole.Prompt(new TextPrompt<string>("Search anime:"));
             var result = await _allAnimeClient.SearchAnime(query);
 
-            if (result != null)
+            if (result.HasValue)
             {
-                results = result.Data.Shows.Edges.ToList();
+                results = result.Value.Data.Shows.Edges.ToList();
             }
         }
 
@@ -82,7 +85,7 @@ public class AniSharpProgramSteps
             "S-mp4",
             "Luf-mp4"
         };
-        var validSources = sources.Data.Episode.SourceUrls
+        var validSources = sources.Value.Data.Episode.SourceUrls
             .Where(source => validSourceNames.Contains(source.SourceName))
             .ToList();
 
@@ -104,7 +107,7 @@ public class AniSharpProgramSteps
     }
 
     
-    public void PlayAnime(List<LinksFromSourceUrlResponseModel.LinkType> linkTypes)
+    public void PlayAnime(SearchAnimeResponseModel.DataType.ShowsType.EdgesType show, int episode, List<LinksFromSourceUrlResponseModel.LinkType> linkTypes)
     {
         linkTypes.Sort((a, b) => GetResolutionPriority(a.ResolutionStr).CompareTo(GetResolutionPriority(b.ResolutionStr)));
 
@@ -128,6 +131,7 @@ public class AniSharpProgramSteps
                 url.Link = url.Link.Remove(url.Link.IndexOf(".urlset", StringComparison.Ordinal));
             }
 
+            _historyManager.AddToHistory(show.Id, show.Name, episode);
             var process = new Process()
             {
                 StartInfo = new ProcessStartInfo()
